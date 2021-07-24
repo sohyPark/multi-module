@@ -46,7 +46,6 @@ subprojects {
 }
 
 
-
 project(':app-core') {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
@@ -61,8 +60,8 @@ project(':app-core') {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+		implementation 'com.h2database:h2'
 
 		// querydsl
 		implementation group: 'com.querydsl', name: 'querydsl-jpa'
@@ -71,6 +70,8 @@ project(':app-core') {
 		// modelmapper
 		implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.4'
 
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
 
 	}
@@ -110,6 +111,25 @@ project(':app-batch') {
 		implementation project(":app-core")
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
 		testImplementation 'org.springframework.batch:spring-batch-test'
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	}
+}
+
+project(':app-admin') {
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	jar {
+		enabled = true
+	}
+	bootJar {
+		enabled = false
+	}
+
+	dependencies {
+		implementation project(":app-core")
+		implementation 'org.springframework.boot:spring-boot-starter-web'
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	}

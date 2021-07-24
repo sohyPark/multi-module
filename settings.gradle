@@ -1,3 +1,2 @@
 rootProject.name = 'ceo'
-include 'app-core' , 'app-admin', 'app-batch'
-
+include 'app-core' , 'app-admin', 'app-batch', 'app-board'
