@@ -116,7 +116,7 @@ project(':app-batch') {
 	}
 }
 
-project(':app-admin') {
+project(':app-board') {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
@@ -132,5 +132,8 @@ project(':app-admin') {
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+		implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.5.1'
+		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
 	}
 }
