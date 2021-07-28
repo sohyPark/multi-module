@@ -1,4 +1,4 @@
-package entity;
+package com.baemin.server.ceo.core.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

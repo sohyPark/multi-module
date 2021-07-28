@@ -1,4 +1,4 @@
-package com.baemin.server.ceo.util;
+package com.baemin.server.ceo.admin.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

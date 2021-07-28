@@ -2,6 +2,7 @@ plugins {
     id 'java'
 }
 
+group 'com.baemin.server.ceo.batch'
 version 'unspecified'
 
 repositories {

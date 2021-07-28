@@ -1,6 +1,6 @@
-package com.baemin.server.ceo.interceptor;
+package com.baemin.server.ceo.admin.interceptor;
 
-import com.baemin.server.ceo.service.TokenService;
+import com.baemin.server.ceo.admin.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class InterCeptor implements HandlerInterceptor {
-
+public class Interceptor implements HandlerInterceptor {
     @Autowired
     private TokenService tokenService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String requestURI = request.getRequestURI();
         if ( requestURI.indexOf("/api") != 0 ) {
             return false;
@@ -38,5 +37,4 @@ public class InterCeptor implements HandlerInterceptor {
         }
         return true;
     }
-
 }

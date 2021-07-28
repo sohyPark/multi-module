@@ -1,7 +1,8 @@
-package com.baemin.server.ceo.service;
+package com.baemin.server.ceo.admin.service;
 
+import com.baemin.server.ceo.core.entity.User;
 import com.sun.org.slf4j.internal.Logger;
-import entity.UserEntity;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,8 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.org.slf4j.internal.LoggerFactory;
-
 
 @Service
 public class TokenService {
@@ -23,12 +22,12 @@ public class TokenService {
     private static final String secretKey = "BAEMIN-SERVER";
     private static final long expireTime = 30; // (min)
 
-    public String createToken( final UserEntity userEntity) throws UnsupportedEncodingException {
+    public String createToken( final User user) throws UnsupportedEncodingException {
 
         Date now = new Date();
         Date expiration = new Date( Instant.now().toEpochMilli() + 1000 * 60 * expireTime );
 
-        Claims claims = Jwts.claims().setSubject( userEntity.getId() );
+        Claims claims = Jwts.claims().setSubject( user.getId() );
 
         Map<String, Integer> map = new HashMap<>();
 
@@ -54,4 +53,3 @@ public class TokenService {
 
         return false;
     }
-}

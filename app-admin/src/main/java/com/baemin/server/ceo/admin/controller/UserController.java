@@ -1,8 +1,8 @@
-package com.baemin.server.ceo.controller;
+package com.baemin.server.ceo.admin.controller;
 
 
-import com.baemin.server.ceo.service.UserService;
-import entity.UserEntity;
+import com.baemin.server.ceo.admin.service.UserService;
+import com.baemin.server.ceo.core.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping( method = RequestMethod.POST, value = "/login" )
-    public ResponseEntity<UserEntity> login(@RequestBody final UserEntity userEntity, HttpServletResponse response ) {
+    public ResponseEntity<User> login( @RequestBody final User user, HttpServletResponse response ) {
 
-        logger.info( "method: POST, api: /login, id: {}", userEntity.getId() );
+        logger.info( "method: POST, api: /login, id: {}", user.getId() );
 
-        return userService.get(userEntity, response );
+        return userService.get(user, response );
     }
 }
