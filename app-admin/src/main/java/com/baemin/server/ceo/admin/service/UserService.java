@@ -21,9 +21,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private TokenService tokenService;
-
     public ResponseEntity get( final User user, final HttpServletResponse response) {
 
         final String id = user.getId();
@@ -53,7 +50,7 @@ public class UserService {
 
         String token = null;
         try {
-            token = tokenService.createToken(user);
+            //token = tokenService.createToken(user);
         } catch (Exception e) {
             System.out.println();
             logger.error("create token - user: {}, error: {}", user, e.getMessage());

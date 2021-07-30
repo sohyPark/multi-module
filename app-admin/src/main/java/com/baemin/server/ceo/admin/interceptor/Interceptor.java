@@ -1,7 +1,5 @@
 package com.baemin.server.ceo.admin.interceptor;
 
-import com.baemin.server.ceo.admin.service.TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,8 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class Interceptor implements HandlerInterceptor {
-    @Autowired
-    private TokenService tokenService;
+
 
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -21,12 +18,6 @@ public class Interceptor implements HandlerInterceptor {
         }
 
         final String token = request.getHeader( "jwt-auth-token" );
-        if ( !tokenService.verifyToken( token ) ) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"isToken\":\"false\"}");
-            return false;
-        }
 
         String requestId;
         if ( "/api/login".equals( requestURI ) ) {
