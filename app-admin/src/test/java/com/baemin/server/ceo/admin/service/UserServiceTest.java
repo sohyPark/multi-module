@@ -17,18 +17,17 @@ class UserServiceTest {
 
     @Test
     void find() {
-        String id = "admin";
+        String email = "admin";
         String password = "admin";
 
         User userEntity = User.builder()
-                .id( id )
+                .email( email )
                 .password( password )
-                .name( "관리자" )
                 .build();
 
         userRepository.save( userEntity );
 
-        Optional<User> user = userRepository.findUserByIdAndPassword( id, password );
+        Optional<User> user = userRepository.findUserByEmailAndPassword( email, password );
         Assertions.assertNotNull(user);
     }
 

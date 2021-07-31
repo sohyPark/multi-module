@@ -1,10 +1,10 @@
-package com.baemin.server.ceo.admin.util;
+package com.baemin.server.ceo.board.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class RestResponse {
-    public static ResponseEntity fail(final HttpStatus status, final String errorMessage) {
+    public static ResponseEntity fail( final HttpStatus status, final String errorMessage) {
         return toResponseEntity(status, errorMessage);
     }
 
