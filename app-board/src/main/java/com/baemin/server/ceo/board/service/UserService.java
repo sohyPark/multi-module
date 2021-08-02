@@ -1,6 +1,6 @@
 package com.baemin.server.ceo.board.service;
 
-import com.baemin.server.ceo.board.security.JwtTokenProvier;
+import com.baemin.server.ceo.board.security.JwtTokenProvider;
 import com.baemin.server.ceo.board.util.RestResponse;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.UserRepository;
@@ -23,7 +23,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtTokenProvier jwtTokenProvier;
+    private JwtTokenProvider jwtTokenProvider;
 
     public ResponseEntity login( final User user, final HttpServletResponse response) {
 
@@ -54,7 +54,7 @@ public class UserService {
 
         String token = null;
         try {
-            token = jwtTokenProvier.createToken(user);
+            token = jwtTokenProvider.createToken(user);
         } catch (Exception e) {
             System.out.println();
             logger.error("create token - user: {}, error: {}", user, e.getMessage());

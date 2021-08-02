@@ -1,6 +1,7 @@
 package com.baemin.server.ceo.board.service;
 
 import com.baemin.server.ceo.board.dto.PostDto;
+import com.baemin.server.ceo.board.enumtype.ActiveStatus;
 import com.baemin.server.ceo.board.util.RestResponse;
 import com.baemin.server.ceo.core.entity.Board;
 import com.baemin.server.ceo.core.entity.Post;
@@ -26,6 +27,8 @@ import java.util.Optional;
 @Service
 public class PostService {
     private static final Logger logger = LoggerFactory.getLogger( PostService.class );
+
+    private static final int maxPostCount = 5;
 
     @Autowired
     private BoardRepository boardRepository;
@@ -92,7 +95,7 @@ public class PostService {
         LocalDateTime endLdt = LocalDateTime.of( today, endTime );
 
         long todayPostCount = postRepository.countPostByCreatedDateBetween( startLdt, endLdt );
-        if ( todayPostCount > 5 ) {
+        if ( todayPostCount > maxPostCount ) {
             logger.error( "[countPostByCreatedDateBetween] - startLdt: {}, endLdtL: {}]", startLdt, endLdt );
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "하루에 게시글은5개 까지만 작성할 수 있습니다." );
         }
@@ -131,15 +134,48 @@ public class PostService {
 
         Optional<Post> findPost = postRepository.findPostByIdAndUser_Id( postId, req.getUserId() );
         if ( !findPost.isPresent() ) {
-            logger.error( "not your own post - userId: {}", req.getUserId() );
-            return RestResponse.fail( HttpStatus.BAD_REQUEST, "본인이 작성한 게시글만 수정할 수 있습니다." );
+            logger.error( "not found post by postId and userIdt - postId: {}, userId: {}", postId, req.getUserId() );
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "수정할 게시글을 찾을 수 없습니다." );
         }
 
         Post post = findPost.get();
+        if ( post.getUser().getId() != req.getUserId() ) {
+            logger.error( "not found post by postId and userIdt - postId: {}, userId: {}", postId, req.getUserId() );
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "본인이 작성한 게시글만 수정할 수 있습니다." );
+        }
 
+        post.setContents( contents );
+        Post newPost = postRepository.save( post );
 
-        return null;
+        return RestResponse.success( newPost.getId() );
 
     }
 
+    public ResponseEntity hide( PostDto.hideReq req ) {
+        long postId = req.getPostId();
+        Optional<Post> findPost = postRepository.findById( postId );
+        if ( !findPost.isPresent() ) {
+            logger.error( "post is not found - commentId: {}", postId );
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "숨김처리 할 게시을 찾을 수 없습니다." );
+        }
+
+        Post post = findPost.get();
+        long userId = req.getUserId();
+        long postUserId = post.getUser().getId();
+        if (postUserId != userId) {
+            logger.error( "not your own post - postId: {}, post's userId: {}, req userId: {}", postId, postUserId, userId );
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "본인이 작성한 댓글만 숨길 수 있습니다." );
+        }
+
+        post.setActive( ActiveStatus.IN_ACTIVE.ordinal() );
+
+        Post updatePost = postRepository.save( post );
+        if (updatePost.getId() < 1) {
+            logger.error( "post save is failed - commentId: {}", postId);
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "숨김처리가 실패하였습니다." );
+        }
+
+        return RestResponse.success();
+
+    }
 }

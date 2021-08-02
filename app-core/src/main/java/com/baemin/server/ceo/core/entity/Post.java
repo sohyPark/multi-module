@@ -31,6 +31,7 @@ public class Post extends BaseTimeEntity{
 
     private int count;
 
+    @Setter
     @ColumnDefault( "1" )
     private int active; // 0: inactive, 1: active
 

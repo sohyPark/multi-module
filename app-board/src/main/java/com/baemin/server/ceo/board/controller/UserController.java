@@ -19,9 +19,9 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping( method = RequestMethod.POST, value = "/login" )
-    public ResponseEntity<User> login( HttpServletResponse response,  @RequestBody final User user ) {
+    public ResponseEntity login( HttpServletResponse response, @RequestBody final User user ) {
 
-        logger.info( "method: POST, api: /login, id: {}", user.getId() );
+        logger.info( "method: POST, api: /login, email: {}", user.getEmail() );
 
         return userService.login(user, response );
     }

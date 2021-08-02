@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -15,10 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JwtTokenProvier {
-    private static final Logger logger = LoggerFactory.getLogger( JwtTokenProvier.class);
+public class JwtTokenProvider {
+    private static final Logger logger = LoggerFactory.getLogger( JwtTokenProvider.class);
 
-    private static final String secretKey = "ZIGZAG";
+    @Value( "$(token.secretKey)" )
+    private String secretKey;
+   //private static final String secretKey = "ZIGZAG";
     private static final long expireTime = 30; //(min)
 
     public String createToken( final User user ) throws UnsupportedEncodingException {

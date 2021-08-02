@@ -20,6 +20,7 @@ public class BoardService {
     private static final Logger logger = LoggerFactory.getLogger( BoardService.class );
 
     private static final String HACKER_NEWS_URL = "https://hacker-news.firebaseio.com";
+
     private WebClient webClient;
 
     public ResponseEntity getNews() {
@@ -29,7 +30,7 @@ public class BoardService {
                 .build();
 
         Long[] ids = webClient.get()
-                .uri( "/v0/newstories.json?print=pretty&orderBy=\"$key\"&limitToFirst=10" )
+                .uri( "/v0/newstories.json?orderBy=\"$key\"&limitToFirst=10" )
                 .retrieve()
                 .bodyToMono( Long[].class )
                 .block();
@@ -64,8 +65,7 @@ public class BoardService {
             Mono<HackerNews> response = this.webClient.get()
                     .uri( "/v0/item/" + itemId + ".json" )
                     .retrieve()
-                    .bodyToMono( HackerNews.class )
-                    .log();
+                    .bodyToMono( HackerNews.class );
             response.subscribe( future::complete );
         } ).start();
 
