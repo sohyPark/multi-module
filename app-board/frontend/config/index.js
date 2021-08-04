@@ -48,8 +48,6 @@ module.exports = {
   },
 
   build: {
-    // Template for index.html
-    // Template for index.html
 
     proxy: {
       '/api': {
@@ -59,12 +57,9 @@ module.exports = {
       }
     },
 
-    //index: path.resolve(__dirname, '../../src/main/resources/templates/index.html'),
     index: path.resolve(__dirname, '../../src/main/resources/static/index.html'),
-    // Paths
     assetsRoot: path.resolve(__dirname, '../../src/main/resources/static'),
 
-    // Paths
     assetsSubDirectory: '',
     assetsPublicPath: '/',
 
