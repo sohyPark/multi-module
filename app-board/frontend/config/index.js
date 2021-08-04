@@ -10,7 +10,18 @@ module.exports = {
     // Paths
     assetsSubDirectory: '',
     assetsPublicPath: '/',
-    proxyTable: {},
+    // proxyTable: {
+    //   "**": "http://localhost:8081"  // 추가
+    // },
+
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8081',
+        ws: true,
+        changeOrigin: true
+      }
+    },
+
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -39,8 +50,17 @@ module.exports = {
   build: {
     // Template for index.html
     // Template for index.html
-    index: path.resolve(__dirname, '../../src/main/resources/templates/index.html'),
 
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8081',
+        ws: true,
+        changeOrigin: true
+      }
+    },
+
+    //index: path.resolve(__dirname, '../../src/main/resources/templates/index.html'),
+    index: path.resolve(__dirname, '../../src/main/resources/static/index.html'),
     // Paths
     assetsRoot: path.resolve(__dirname, '../../src/main/resources/static'),
 
