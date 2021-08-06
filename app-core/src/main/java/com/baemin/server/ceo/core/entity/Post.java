@@ -23,8 +23,8 @@ public class Post extends BaseTimeEntity{
     @Setter
     private String contents;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable=false, updatable=false)
     private User user;
 
     private long boardId;

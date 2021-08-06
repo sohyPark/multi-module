@@ -10,22 +10,19 @@ module.exports = {
     // Paths
     assetsSubDirectory: '',
     assetsPublicPath: '/',
-    // proxyTable: {
-    //   "**": "http://localhost:8081"  // 추가
-    // },
 
-    proxy: {
-      '/api': {
+    proxyTable: {
+      '/board': {
         target: 'http://localhost:8081',
-        ws: true,
-        changeOrigin: true
+        changeOrigin: true,
+        secure: false
       }
     },
 
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 9000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -50,11 +47,17 @@ module.exports = {
   build: {
 
     proxy: {
-      '/api': {
+      '/board': {
         target: 'http://localhost:8081',
         ws: true,
         changeOrigin: true
       }
+      // ,
+      // '/admin': {
+      //   target: 'http://localhost:8082',
+      //   ws: true,
+      //   changeOrigin: true
+      // }
     },
 
     index: path.resolve(__dirname, '../../src/main/resources/static/index.html'),

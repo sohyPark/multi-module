@@ -26,7 +26,7 @@ public class User {
     private int count;
 
     @ColumnDefault( "1" )
-    private int active; // 0: inactive, 1: active
+    private int active = 1; // 0: inactive, 1: active
 
     @Builder
     public User( long id, String email, String password, int rank, int count) {

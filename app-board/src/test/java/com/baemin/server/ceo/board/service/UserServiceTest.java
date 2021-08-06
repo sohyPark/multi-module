@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @SpringBootTest
 class UserServiceTest {
@@ -20,7 +20,7 @@ class UserServiceTest {
     @Rollback(value = false)
     void save() {
         User user = User.builder()
-                .email( "admin@gamil.com" )
+                .email( "parksohyan@gamil.com" )
                 .password( "admin" )
                 .build();
 
@@ -30,5 +30,11 @@ class UserServiceTest {
     @Test
     void find() {
         Assertions.assertNotNull(userRepository.findById( 1L ));
+    }
+
+    @Test
+    void findAll() {
+        List<User> list = userRepository.findAll();
+        Assertions.assertNotNull(userRepository.findAll());
     }
 }

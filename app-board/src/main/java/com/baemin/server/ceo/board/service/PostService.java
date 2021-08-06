@@ -3,7 +3,6 @@ package com.baemin.server.ceo.board.service;
 import com.baemin.server.ceo.board.dto.PostDto;
 import com.baemin.server.ceo.board.enumtype.ActiveStatus;
 import com.baemin.server.ceo.board.util.RestResponse;
-import com.baemin.server.ceo.core.entity.Board;
 import com.baemin.server.ceo.core.entity.Post;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.BoardRepository;
@@ -12,6 +11,9 @@ import com.baemin.server.ceo.core.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -42,11 +46,30 @@ public class PostService {
     @Autowired
     private ContentsService contentsService;
 
-    public ResponseEntity getAll() {
+    public ResponseEntity getAll( PostDto.getAllReq req ) {
 
-        List<Board> boardList = boardRepository.findAll();
+        Pageable pageable = PageRequest.of( req.getPage(), req.getSize() );
 
-        return RestResponse.success( boardList );
+        Page<Post> posts = postRepository.findAll(pageable);
+        List<Post> postList = posts.getContent();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put( "total", postList.size() );
+        result.put( "list", postList );
+
+        return RestResponse.success( result );
+
+    }
+
+    public ResponseEntity get( long id ) {
+
+        Optional<Post> post = postRepository.findById( id );
+        if (!post.isPresent()) {
+            logger.error( "not found post by id - id: {}", id );
+            return RestResponse.fail( HttpStatus.NO_CONTENT, "해당 게시물을 찾을 수 없습니다." );
+        }
+
+        return RestResponse.success( post.get() );
 
     }
 
@@ -162,7 +185,7 @@ public class PostService {
         Post post = findPost.get();
         long userId = req.getUserId();
         long postUserId = post.getUser().getId();
-        if (postUserId != userId) {
+        if ( postUserId != userId ) {
             logger.error( "not your own post - postId: {}, post's userId: {}, req userId: {}", postId, postUserId, userId );
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "본인이 작성한 댓글만 숨길 수 있습니다." );
         }
@@ -170,8 +193,8 @@ public class PostService {
         post.setActive( ActiveStatus.IN_ACTIVE.ordinal() );
 
         Post updatePost = postRepository.save( post );
-        if (updatePost.getId() < 1) {
-            logger.error( "post save is failed - commentId: {}", postId);
+        if ( updatePost.getId() < 1 ) {
+            logger.error( "post save is failed - commentId: {}", postId );
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "숨김처리가 실패하였습니다." );
         }
 

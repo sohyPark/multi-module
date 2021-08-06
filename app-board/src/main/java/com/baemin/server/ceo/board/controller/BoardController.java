@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/board")
 public class BoardController {
 
     private static final Logger logger = LoggerFactory.getLogger( BoardController.class );

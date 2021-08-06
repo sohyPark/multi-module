@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
+@RequestMapping("/board")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger( UserController.class );
 
@@ -21,7 +22,7 @@ public class UserController {
     @RequestMapping( method = RequestMethod.POST, value = "/login" )
     public ResponseEntity login( HttpServletResponse response, @RequestBody final User user ) {
 
-        logger.info( "method: POST, api: /login, email: {}", user.getEmail() );
+        logger.info( "method: POST, api: /board/login, email: {}", user.getEmail() );
 
         return userService.login(user, response );
     }
@@ -29,8 +30,15 @@ public class UserController {
     @RequestMapping( method = RequestMethod.POST, value = "/logout" )
     public ResponseEntity logout( @RequestHeader HttpHeaders headers, @RequestParam final long id ) {
 
-        logger.info( "method: POST, api: /logout, id: {}", id );
+        logger.info( "method: POST, api: /board/logout, id: {}", id );
 
         return userService.logout(id);
+    }
+
+    @RequestMapping( method = RequestMethod.POST, value = "/signin" )
+    public ResponseEntity signin( @RequestHeader HttpHeaders headers) {
+
+
+        return userService.signin();
     }
 }

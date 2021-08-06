@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Login from '../components/Login'
+import Post from "../components/Post";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -20,6 +21,12 @@ export default new Router({
       path: '/login',
       name: Login,
       component: Login,
+      props: true
+    },
+    {
+      path: '/post',
+      name: Post,
+      component: Post,
       props: true
     }
   ]

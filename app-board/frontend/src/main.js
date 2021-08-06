@@ -5,9 +5,11 @@ import App from './App'
 import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
+import VueCookie from 'vue-cookie';
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
+Vue.use(VueCookie);
 Vue.prototype.$axios = axios;
 
 /* eslint-disable no-new */

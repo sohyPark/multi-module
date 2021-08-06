@@ -49,7 +49,8 @@ public class UserService {
 
         if ( !findUser.isPresent() ) {
             logger.error("User not found - email: {}", email);
-            return RestResponse.fail(HttpStatus.NO_CONTENT, "사용자를 찾을 수 없습니다.");
+            return ResponseEntity.status( HttpStatus.NO_CONTENT ).body( "사용자를 찾을 수 없습니다. " );
+            //return RestResponse.fail(HttpStatus.NO_CONTENT, "사용자를 찾을 수 없습니다.");
         }
 
         String token = null;
@@ -72,6 +73,17 @@ public class UserService {
     }
 
     public ResponseEntity logout( long id ) {
+        return RestResponse.success(id);
+    }
+
+    public ResponseEntity signin( ) {
+        User user = User.builder()
+                .email( "parksohyan@gmail.com" )
+                .password( "admin" )
+                .build();
+
+        User newUser = userRepository.save( user );
+        long id = newUser.getId();
         return RestResponse.success(id);
     }
 }

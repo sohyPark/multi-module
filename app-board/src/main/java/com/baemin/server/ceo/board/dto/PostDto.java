@@ -7,6 +7,13 @@ public class PostDto {
 
     @Getter
     @Setter
+    public static class getAllReq {
+        private int page;
+        private int size;
+    }
+
+    @Getter
+    @Setter
     public static class putReq {
         private long boardId;
         private String title;
