@@ -4,4 +4,9 @@ server:
 token:
   secertKey: 'baemin-server'
 
-mail:
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:test
+#    username: sa
+#    password: baemin-server
+#    driver-class-name: org.h2.Driver

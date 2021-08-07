@@ -1,6 +1,7 @@
 package com.baemin.server.ceo.board.service;
 
-import com.baemin.server.ceo.board.security.JwtTokenProvider;
+import com.baemin.server.ceo.board.dto.UserDto;
+import com.baemin.server.ceo.board.enumtype.AuthCode;
 import com.baemin.server.ceo.board.util.RestResponse;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.UserRepository;
@@ -12,8 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -22,68 +22,52 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public ResponseEntity signIn( final UserDto.addReq req) {
 
-    public ResponseEntity login( final User user, final HttpServletResponse response) {
+        final int auth = req.getAuth();
+        if ( !AuthCode.isContains( auth ) ) {
+            logger.error("auth is invalid");
+            return RestResponse.fail(HttpStatus.BAD_REQUEST, "권한을 선택해주세요.");
+        }
 
-        final String email = user.getEmail();
+        final String name = req.getName();
+        if (ObjectUtils.isEmpty(name)) {
+            logger.error("name is required");
+            return RestResponse.fail(HttpStatus.BAD_REQUEST, "이름을 입력해주세요.");
+        }
+
+        final String email = req.getEmail();
         if ( ObjectUtils.isEmpty(email)) {
             logger.error("email is required");
-            return RestResponse.fail( HttpStatus.BAD_REQUEST, "이메일을 입력햊세요.");
+            return RestResponse.fail( HttpStatus.BAD_REQUEST, "이메일을 입력해주세요.");
         }
 
-        final String password = user.getPassword();
+        final String password = req.getPassword();
         if (ObjectUtils.isEmpty(password)) {
             logger.error("password is required");
-            return RestResponse.fail(HttpStatus.BAD_REQUEST, "비밀번를 입력햊세요.");
+            return RestResponse.fail(HttpStatus.BAD_REQUEST, "비밀번호를 입력해주세요.");
         }
 
-        Optional<User> findUser;
-        try {
-            findUser = userRepository.findUserByEmailAndPassword(email, password);
-        } catch (Exception e) {
-            logger.error("User findUserByIdAndPassword error : {}, email: {}", e.getMessage(), email);
-            return RestResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        User user = User.builder()
+                .name( name )
+                .email( email )
+                .password( password )
+                .auth( auth )
+                .build();
 
-        if ( !findUser.isPresent() ) {
-            logger.error("User not found - email: {}", email);
-            return ResponseEntity.status( HttpStatus.NO_CONTENT ).body( "사용자를 찾을 수 없습니다. " );
-            //return RestResponse.fail(HttpStatus.NO_CONTENT, "사용자를 찾을 수 없습니다.");
+        User saveUser = userRepository.save( user );
+        if (saveUser.getId() < 0){
+            logger.error( "" );
+            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "사용자 추가가 실패하였습니다." );
         }
-
-        String token = null;
-        try {
-            token = jwtTokenProvider.createToken(user);
-        } catch (Exception e) {
-            System.out.println();
-            logger.error("create token - user: {}, error: {}", user, e.getMessage());
-            return RestResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-
-        if (token == null) {
-            logger.error("created token is null - email: {}", email);
-            return RestResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 생성이 실패하였습니다.");
-        }
-
-        response.setHeader("jwt-auth-token", token);
 
         return RestResponse.success();
     }
 
-    public ResponseEntity logout( long id ) {
-        return RestResponse.success(id);
-    }
+    public ResponseEntity getUsers() {
 
-    public ResponseEntity signin( ) {
-        User user = User.builder()
-                .email( "parksohyan@gmail.com" )
-                .password( "admin" )
-                .build();
+        List<User> userList = userRepository.findAll();
 
-        User newUser = userRepository.save( user );
-        long id = newUser.getId();
-        return RestResponse.success(id);
+        return RestResponse.success(userList);
     }
 }

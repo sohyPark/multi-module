@@ -6,10 +6,13 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
 import VueCookie from 'vue-cookie';
+import SortedTablePlugin from "vue-sorted-table";
+
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
 Vue.use(VueCookie);
+Vue.use(SortedTablePlugin);
 Vue.prototype.$axios = axios;
 
 /* eslint-disable no-new */
@@ -19,3 +22,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

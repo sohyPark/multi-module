@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class BoardService {
+public class NewsdService {
 
-    private static final Logger logger = LoggerFactory.getLogger( BoardService.class );
+    private static final Logger logger = LoggerFactory.getLogger( NewsdService.class );
 
     private static final String HACKER_NEWS_URL = "https://hacker-news.firebaseio.com";
 

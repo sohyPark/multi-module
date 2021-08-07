@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-class BoardServiceTest {
+class NewsdServiceTest {
 
     private static final String HACKER_NEWS_URL = "https://hacker-news.firebaseio.com";
 
