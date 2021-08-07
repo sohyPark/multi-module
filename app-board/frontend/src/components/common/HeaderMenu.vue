@@ -26,9 +26,9 @@ export default {
     }
   },
   methods: {
-    getMenus: function () {
+    getBoards: function () {
       const token = this.$cookie.get('token');
-      this.$axios.get('/board/menus', {
+      this.$axios.get('/board/boards', {
         headers: {'jwt-auth-token': token}
       })
         .then((response) => {
@@ -43,7 +43,7 @@ export default {
     },
   },
   created() {
-    this.getMenus();
+    this.getBoards();
   }
 }
 </script>

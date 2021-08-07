@@ -3,6 +3,7 @@ package com.baemin.server.ceo.core.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -17,13 +18,16 @@ public class User {
     private long id;
 
     @Column(length = 16)
+    @Setter
     private String name;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
+    @Setter
     private String password;
 
+    @Setter
     private int auth;
 
     private int rank;
@@ -31,6 +35,7 @@ public class User {
     private int count;
 
     @ColumnDefault( "1" )
+    @Setter
     private int active = 1; // 0: inactive, 1: active
 
     @Builder
