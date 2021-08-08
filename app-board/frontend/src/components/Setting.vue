@@ -1,23 +1,24 @@
 <template>
   <div>
-    <b-tabs>
-      <b-tab active style="width: 200px" title="사용자 관리" to="/user"></b-tab>
-      <b-tab title="게시판 관리" to="/board"></b-tab>
-    </b-tabs>
-    <router-view>
-    </router-view>
+    <b-nav tabs >
+      <b-nav-item active-class="active" to="/setting/user" >사용자 관리</b-nav-item>
+      <b-nav-item active-class="active" to="/setting/board">게시판 관리</b-nav-item>
+    </b-nav>
+    <b-card-body>
+      <router-view>
+      </router-view>
+    </b-card-body>
+
   </div>
 </template>
 
 <script>
 export default {
   name: "Setting",
-  data: function () {
-    return {
-      header: {headers: {"Content-type": "application/json"}},
-      userList: []
-    }
-  },
+  props: ["name"],
+  mounted() {
+    this.$router.replace('/setting/user');
+  }
 }
 </script>
 

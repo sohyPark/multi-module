@@ -33,6 +33,8 @@ export default {
       })
         .then((response) => {
           //this.tokenValidationChk(response.data)
+          console.log("menu")
+          console.log(response)
           if (response.status === 200) {
             this.menus = response.data;
           }

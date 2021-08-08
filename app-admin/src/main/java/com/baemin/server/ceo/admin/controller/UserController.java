@@ -28,8 +28,16 @@ public class UserController {
     @RequestMapping( method = RequestMethod.PUT, value = "/{id}" )
     public ResponseEntity update( @PathVariable( "id" ) long id, @RequestBody final UserDto.updateReq req ) {
 
-        logger.info( "method: PUT, api: /admin/users/{id}, auth: {}, name: {}", req.getAuth(), req.getName() );
+        logger.info( "method: PUT, api: /admin/users/{id}, id: {}, auth: {}, name: {}", id, req.getAuth(), req.getName() );
 
         return userService.update( id, req );
+    }
+
+    @RequestMapping( method = RequestMethod.DELETE, value = "/{id}" )
+    public ResponseEntity hide( @PathVariable( "id" ) long id ) {
+
+        logger.info( "method: DELETE, api: /admin/users/{id}, id: {}", id );
+
+        return userService.hide( id );
     }
 }

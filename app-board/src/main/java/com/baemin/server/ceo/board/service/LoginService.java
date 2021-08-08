@@ -76,14 +76,4 @@ public class LoginService {
         return RestResponse.success(id);
     }
 
-    public ResponseEntity signin( ) {
-        User user = User.builder()
-                .email( "parksohyan@gmail.com" )
-                .password( "admin" )
-                .build();
-
-        User newUser = userRepository.save( user );
-        long id = newUser.getId();
-        return RestResponse.success(id);
-    }
 }

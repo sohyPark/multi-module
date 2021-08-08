@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
+import java.util.List;
 
 @SpringBootTest
 class UserServiceTest {
@@ -17,18 +17,9 @@ class UserServiceTest {
 
     @Test
     void find() {
-        String email = "admin";
-        String password = "admin";
 
-        User userEntity = User.builder()
-                .email( email )
-                .password( password )
-                .build();
-
-        userRepository.save( userEntity );
-
-        Optional<User> user = userRepository.findUserByEmailAndPassword( email, password );
-        Assertions.assertNotNull(user);
+        List<User> userList = userRepository.findAll();
+        Assertions.assertNotNull(userList);
     }
 
 }

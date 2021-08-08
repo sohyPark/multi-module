@@ -65,45 +65,41 @@ public class CommentService {
         return RestResponse.success();
     }
 
-    public ResponseEntity update( CommentDto.updateReq req ) {
+    public ResponseEntity update( long id, CommentDto.updateReq req ) {
 
-        if ( req.getCommentId() < 1 ) {
-            logger.error( "commentId is empty" );
-            return RestResponse.fail( HttpStatus.BAD_REQUEST, "수정할 댓글을 선택해주세요." );
-        }
-
-        Optional<User> user = userRepository.findById( req.getUserId() );
-        if ( !user.isPresent() ) {
-            logger.error( "user is empty - userId: {}", req.getUserId() );
-            return RestResponse.fail( HttpStatus.BAD_REQUEST, "계정 정보가 올바르지 않습니다." );
-        }
-
-        long commentId = req.getCommentId();
-        Optional<Comment> findComment = commentRepository.findById( commentId );
+        Optional<Comment> findComment = commentRepository.findById( id );
         if ( !findComment.isPresent() ) {
-            logger.error( "comment is not found - commentId: {}", commentId );
-            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "수정할 댓글을 찾을 수 없습니다." );
+            logger.error( "comment is not found by id - id: {}", id );
+            return new ResponseEntity<>( "수정할 댓글을 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR );
         }
+
+        long userId = req.getUserId();
+
+        Comment comment = findComment.get();
+        long commentUserId = comment.getUser().getId();
+        if (userId != commentUserId) {
+            logger.error( "the commenter and the requested userId do not match - commentUserId: {}, userId: {}", commentUserId, userId );
+            return new ResponseEntity<>( "본인이 작성한 댓글만 수정할 수 있습니다.", HttpStatus.INTERNAL_SERVER_ERROR );
+        }
+
 
         String contents = req.getContents();
-        Comment comment = findComment.get();
         comment.setContents( contents );
 
         Comment updatedComment = commentRepository.save( comment );
         if (updatedComment.getId() < 1) {
-            logger.error( "comment save is failed - commentId: {}, contents: {}", commentId, contents );
-            return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "댓글 수정이 실패하였습니다." );
+            logger.error( "comment update is failed - id: {}, contents: {}", id, contents );
+            return new ResponseEntity<>( "댓글 수정이 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR );
         }
 
         return RestResponse.success();
     }
 
-    public ResponseEntity hide( CommentDto.hideReq req ) {
+    public ResponseEntity hide( long id, CommentDto.hideReq req ) {
 
-        long commentId = req.getCommentId();
-        Optional<Comment> findComment = commentRepository.findById( commentId );
+        Optional<Comment> findComment = commentRepository.findById( id );
         if ( !findComment.isPresent() ) {
-            logger.error( "comment is not found - commentId: {}", commentId );
+            logger.error( "comment is not found - id: {}", id );
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "숨김처리 할 댓글을 찾을 수 없습니다." );
         }
 
@@ -111,7 +107,7 @@ public class CommentService {
         long userId = req.getUserId();
         long commentUserId = comment.getUser().getId();
         if (commentUserId != userId) {
-            logger.error( "not your own comment - commentId: {}, comment's userId: {}, req userId: {}", commentId, commentUserId, userId );
+            logger.error( "not your own comment - id: {}, comment's userId: {}, req userId: {}", id, commentUserId, userId );
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "본인이 작성한 댓글만 숨길 수 있습니다." );
         }
 
@@ -119,7 +115,7 @@ public class CommentService {
 
         Comment updatedComment = commentRepository.save( comment );
         if (updatedComment.getId() < 1) {
-            logger.error( "comment save is failed - commentId: {}", commentId);
+            logger.error( "comment save is failed - id: {}", id);
             return RestResponse.fail( HttpStatus.INTERNAL_SERVER_ERROR, "숨김처리가 실패하였습니다." );
         }
 

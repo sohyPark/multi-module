@@ -16,6 +16,11 @@ module.exports = {
         target: 'http://localhost:8081',
         changeOrigin: true,
         secure: false
+      },
+      '/admin': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false
       }
     },
 
@@ -51,13 +56,12 @@ module.exports = {
         target: 'http://localhost:8081',
         ws: true,
         changeOrigin: true
+      },
+      '/admin': {
+        target: 'http://localhost:8080',
+        ws: true,
+        changeOrigin: true
       }
-      // ,
-      // '/admin': {
-      //   target: 'http://localhost:8082',
-      //   ws: true,
-      //   changeOrigin: true
-      // }
     },
 
     index: path.resolve(__dirname, '../../src/main/resources/static/index.html'),

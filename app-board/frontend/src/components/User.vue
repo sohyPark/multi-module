@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 50px; min-height: 500px; margin-left: 50px; margin-right: 50px">
     <SortedTable :values="userList" style="margin-top: 50px">
-      <thead style="font-size: me">
+      <thead style="font-size: medium">
       <tr>
         <th scope="col" style="text-align: center">
           <SortLink name="title">권한</SortLink>
@@ -153,12 +153,12 @@ export default {
         auth: this.addLayer.auth
       };
 
-      this.$axios.post('/board/users', params, this.header)
+      this.$axios.post('/admin/users', params, this.header)
         .then((response) => {
           const status = response.status;
+          console.log(response)
           if (status === 200) {
             alert("사용자가 추가 되었습니다.");
-            this.addLayer.show = false;
             this.getUserList();
           } else {
             alert(response.data);

@@ -17,7 +17,6 @@ public class CommentDto {
     @Setter
     public static class updateReq {
         private long userId;
-        private long commentId;
         private String contents;
     }
 
@@ -25,6 +24,5 @@ public class CommentDto {
     @Setter
     public static class hideReq {
         private long userId;
-        private long commentId;
     }
 }

@@ -23,7 +23,7 @@ public class BoardController {
 
         logger.info( "method: GET, api: /board/boards" );
 
-        return boardService.getBoards();
+        return boardService.getAll();
     }
 
 
