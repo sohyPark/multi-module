@@ -1,13 +1,8 @@
 <template>
   <div class="login">
-    <label>
-      <input class="form-control" style="width: 250px" type="text" v-model="email" placeholder="baemin@wooahan.com">
-    </label>
-    <label>
-      <input class="form-control" style="width: 250px; margin-top: 10px" type="password" v-model="password" placeholder="password">
-    </label>
-    <button class="btn btn-primary" style="width: 250px; margin-top: 10px" @click="loginSubmit">LOGIN</button>
-    <button class="btn btn-primary" style="width: 250px; margin-top: 10px" @click="signinSubmit">SIGN IN</button>
+    <input class="form-control" style="width: 350px" type="text" v-model="email" placeholder="baemin@wooahan.com">
+    <input class="form-control" style="width: 350px; margin-top: 10px" type="password" v-model="password" placeholder="password">
+    <button class="btn btn-primary" style="width: 350px; margin-top: 10px; display: block" @click="loginSubmit">LOGIN</button>
   </div>
 </template>
 
@@ -93,6 +88,6 @@ export default {
   position: absolute;
   width: 100%;
   top: 50%;
-  left: 50%;
+  left: 40%;
 }
 </style>

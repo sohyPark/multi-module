@@ -3,7 +3,7 @@
     <div class="menuWrap">
       <ul class="menu">
         <li>
-          <router-link to="/news"></router-link>
+          <router-link to="/news">해커 뉴스</router-link>
         </li>
         <li v-for="item in menus">
           <router-link :to="item.path">item.name</router-link>
