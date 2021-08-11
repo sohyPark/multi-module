@@ -4,8 +4,10 @@ import com.baemin.server.ceo.board.dto.CommentDto;
 import com.baemin.server.ceo.board.enumtype.ActiveStatus;
 import com.baemin.server.ceo.board.util.RestResponse;
 import com.baemin.server.ceo.core.entity.Comment;
+import com.baemin.server.ceo.core.entity.Post;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.CommentRepository;
+import com.baemin.server.ceo.core.repository.PostRepository;
 import com.baemin.server.ceo.core.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,12 @@ public class CommentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public ResponseEntity add( CommentDto.addReq req ) {
 
@@ -62,6 +70,9 @@ public class CommentService {
             return RestResponse.fail( HttpStatus.BAD_REQUEST, "댓글 등록이 실패하였습니다." );
         }
 
+        Optional<Post> findPost = postRepository.findById(postId);
+        Post post = findPost.get();
+        emailService.sendMail(post.getTitle(), contents, findUser, post.getUser());
         return RestResponse.success();
     }
 

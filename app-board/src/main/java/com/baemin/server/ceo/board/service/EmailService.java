@@ -1,53 +1,68 @@
 package com.baemin.server.ceo.board.service;
 
+import com.baemin.server.ceo.core.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Date;
+import java.util.Properties;
 
 @Service
 public class EmailService {
 
-    static final String FROM = "GOODMAN@geoservice.co.kr";
-    static final String FROMNAME = "지오서비스";
-    static final String TO = "heyMan@naver.com";
-    static final String SMTP_USERNAME = "GOODMAN@geoservice.co.kr";
-    static final String SMTP_PASSWORD = "****";
+    private static final Logger logger = LoggerFactory.getLogger( EmailService.class );
 
-    static final String HOST = "smtp.live.com";
-    static final int PORT = 25;
+    private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+    private static final Properties props = System.getProperties();
 
-    static final String SUBJECT = "메일 제목";
+    public boolean sendMail( final String postTitle, final String comment, final User sender, final User recipient) {
 
-    static final String BODY = String.join(
-            System.getProperty("line.separator"),
-            "<h1>메일 내용</h1>",
-            "<p>이 메일은 아름다운 사람이 보낸 아름다운 메일입니다!</p>."
-    );
+        props.setProperty("mail.smtp.host", "smtp.gmail.com");
+        props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+        props.setProperty("mail.smtp.socketFactory.fallback", "false");
+        props.setProperty("mail.smtp.port", "465");
+        props.setProperty("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.debug", "true");
+        props.put("mail.store.protocol", "pop3");
+        props.put("mail.transport.protocol", "smtp");
 
-//    public void sendMail( String comment, User commenter, User postAuthor ) {
-//
-//        Properties props = System.getProperties();
-//        props.put("mail.transport.protocol", "smtp");
-//        props.put("mail.smtp.port", PORT);
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.smtp.auth", "true");
-//        Session session = Session.getDefaultInstance(props);
-//        MimeMessage msg = new MimeMessage(session);
-//        msg.setFrom(new InternetAddress(FROM, FROMNAME));
-//        msg.setRecipient( Message.RecipientType.TO, new InternetAddress(TO));
-//        msg.setSubject(SUBJECT);
-//        msg.setContent(BODY, "text/html;charset=euc-kr");
-//
-//        Transport transport = session.getTransport();
-//        try {
-//            System.out.println("Sending...");
-//
-//            transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
-//            transport.sendMessage(msg, msg.getAllRecipients());
-//            System.out.println("Email sent!");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            transport.close();
-//        }
-//
-//    }
+        final String username = "parksohyan@gmail.com";//
+        final String password = "Thgus5647!!";
+
+        Session session = Session.getDefaultInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            Message msg = new MimeMessage(session);
+            // sender
+            msg.setFrom(new InternetAddress("parksohyan@gmail.com"));
+            // recipient
+            msg.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse("parksohyan@naver.com", false));
+            msg.setSubject("회원님의 게시물에 댓글이 등록되었습니다.");
+            StringBuilder text = new StringBuilder();
+            text.append(recipient.getName()).append("님이 회원님의 게시물(").append(postTitle).append(")").append("에 댓글이 등록되었습니다.").append("\n");
+            text.append("댓글 작성자: ").append(sender.getName()).append("\n");
+            text.append("[").append(comment).append("]");
+            msg.setText(text.toString());
+            msg.setSentDate(new Date());
+            Transport.send(msg);
+
+            logger.info("send email success - senderId: {}, recipientId: {}", sender.getId(), recipient.getId());
+        } catch (MessagingException e) {
+            logger.error("send email error: {}", e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
 }
