@@ -5,7 +5,6 @@ import com.baemin.server.ceo.core.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +27,10 @@ public class LoginController {
     }
 
     @RequestMapping( method = RequestMethod.POST, value = "/logout" )
-    public ResponseEntity logout( @RequestHeader HttpHeaders headers, @RequestParam final long id ) {
+    public ResponseEntity logout() {
 
-        logger.info( "method: POST, api: /board/logout, id: {}", id );
+        logger.info( "method: POST, api: /board/logout" );
 
-        return userService.logout(id);
+        return userService.logout();
     }
 }

@@ -11,6 +11,10 @@
         <li>
           <router-link to="/setting">설정</router-link>
         </li>
+        <li >
+          <button class="btn btn-outline-primary"
+            @click="logout">LOGOUT</button>
+        </li>
       </ul>
     </div>
   </header>
@@ -26,15 +30,21 @@ export default {
     }
   },
   methods: {
+    logout: function () {
+      this.$axios.post('/board/logout')
+        .then((response) => {
+          this.$router.replace('/login');
+        })
+        .catch((ex) => {
+          console.log(ex);
+        })
+    },
     getBoards: function () {
       const token = this.$cookie.get('token');
       this.$axios.get('/board/boards', {
         headers: {'jwt-auth-token': token}
       })
         .then((response) => {
-          //this.tokenValidationChk(response.data)
-          console.log("menu")
-          console.log(response)
           if (response.status === 200) {
             this.menus = response.data;
           }

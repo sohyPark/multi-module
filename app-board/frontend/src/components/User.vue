@@ -44,7 +44,8 @@
         <td>{{ item.email }}</td>
         <td>{{ item.active|activeFilter }}</td>
         <td>
-          <b-button @click="clickEdit(index)">편집</b-button>
+          <b-button v-if="item.editable" @click="updateUser(item)">저장</b-button>
+          <b-button v-else @click="clickEdit(index)">편집</b-button>
         </td>
       </tr>
       </tbody>
@@ -225,14 +226,10 @@ export default {
       this.userSubmit()
     },
     userSubmit() {
-      debugger
-      // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return
       }
-      // Push the name to submitted names
       this.addUser();
-      // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-prevent-closing')
       })
@@ -249,10 +246,8 @@ export default {
       this.$axios.post('/admin/users', params, this.header)
         .then((response) => {
           const status = response.status;
-          console.log(response)
           if (status === 200) {
             alert("사용자가 추가 되었습니다.");
-
             this.getUserList();
           } else {
             alert(response.data);
@@ -265,7 +260,6 @@ export default {
     updateUser: function (item) {
       this.$axios.put('/board/users/' + item.id, item, this.header)
         .then((response) => {
-          //this.tokenValidationChk(response.data);
           const status = response.status;
           if (status === 200) {
             let alertMessage;

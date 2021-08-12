@@ -39,9 +39,6 @@ export default {
         headers: {'jwt-auth-token': token}
       })
         .then((response) => {
-          debugger
-          console.log(response)
-         // this.tokenValidationChk(response.data)
           if (response.status === 200) {
             console.log(response.data)
             this.newsList = response.data;

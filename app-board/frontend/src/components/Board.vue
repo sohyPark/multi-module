@@ -56,7 +56,6 @@ name: "Board",
         headers: {'jwt-auth-token': token}
       })
         .then((response) => {
-          // this.tokenValidationChk(response.data)
           if (response.status === 200) {
             console.log(response.data)
             this.boardList = response.data;

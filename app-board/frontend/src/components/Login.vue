@@ -3,6 +3,7 @@
     <input class="form-control" style="width: 350px" type="text" v-model="email" placeholder="baemin@wooahan.com">
     <input class="form-control" style="width: 350px; margin-top: 10px" type="password" v-model="password" placeholder="password">
     <button class="btn btn-primary" style="width: 350px; margin-top: 10px; display: block" @click="loginSubmit">LOGIN</button>
+  </div>
 </template>
 
 <script>
@@ -20,6 +21,7 @@ export default {
         alert("이메일을 입력해주세요.");
         return;
       }
+
       if (!this.email.contains("@")) {
         alert("이메일형식이 올바르지 않습니다.");
         return;

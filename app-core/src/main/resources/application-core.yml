@@ -31,7 +31,6 @@ logging:
       hibernate:
         sql: DEBUG
 
-
 ---
 spring:
   config:
@@ -45,7 +44,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     generate-ddl: true
 
 
@@ -54,11 +53,18 @@ spring:
   config:
     activate:
       on-profile: prod
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/PSH?autoReconnection=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 5647apfhd!
     driver-class-name: com.mysql.cj.jdbc.Driver
+    schema: classpath*:db/schema.sql
+
 
 
 

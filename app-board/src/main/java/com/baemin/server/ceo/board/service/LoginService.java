@@ -2,7 +2,6 @@ package com.baemin.server.ceo.board.service;
 
 import com.baemin.server.ceo.board.security.JwtTokenProvider;
 import com.baemin.server.ceo.board.util.RestResponse;
-import com.baemin.server.ceo.core.code.Role;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.UserRepository;
 import org.slf4j.Logger;
@@ -28,8 +27,6 @@ public class LoginService {
 
     public ResponseEntity login( final User user, final HttpServletResponse response) {
 
-        this.saveUser();
-
         final String email = user.getEmail();
         if ( ObjectUtils.isEmpty(email)) {
             logger.error("email is required");
@@ -53,7 +50,6 @@ public class LoginService {
         if ( !findUser.isPresent() ) {
             logger.error("User not found - email: {}", email);
             return ResponseEntity.status( HttpStatus.NO_CONTENT ).body( "사용자를 찾을 수 없습니다. " );
-            //return RestResponse.fail(HttpStatus.NO_CONTENT, "사용자를 찾을 수 없습니다.");
         }
 
         String token = null;
@@ -75,20 +71,9 @@ public class LoginService {
         return RestResponse.success();
     }
 
-    public ResponseEntity logout( long id ) {
-        return RestResponse.success(id);
-    }
+    public ResponseEntity logout() {
 
-
-    private void saveUser() {
-        User user = User.builder()
-                .name( "" )
-                .email( "parksohyan@gmail.com" )
-                .password( "admin" )
-                .role( Role.ADMIN.getRole() )
-                .build();
-
-        userRepository.save( user );
+        return RestResponse.success();
     }
 
 }

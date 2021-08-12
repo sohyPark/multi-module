@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS ) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
                 .and()
                 .authorizeRequests() // 요청에 대한 사용권한 체크
-                .antMatchers( "/post" ).authenticated() // 로그인을 해야 게시글을 작성할 수 있
+                .antMatchers( "/post" ).authenticated() // 로그인을 해야 게시글을 작성
                 .antMatchers( "/admin/**" ).hasRole( Role.ADMIN.name() )
                 .antMatchers( "/**" ).permitAll()
                 .anyRequest().permitAll()
@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class )
                 .logout()
                 .logoutUrl( "/logout" )
-                .logoutSuccessUrl( "/" );
+                .logoutSuccessUrl( "/login" );
         ;
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
     }
