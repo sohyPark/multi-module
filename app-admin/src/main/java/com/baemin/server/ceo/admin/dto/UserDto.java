@@ -8,7 +8,7 @@ public class UserDto {
     @Getter
     @Setter
     public static class addReq {
-        private int auth;
+        private int role;
         private String name;
         private String email;
         private String password;
@@ -17,7 +17,7 @@ public class UserDto {
     @Getter
     @Setter
     public static class updateReq {
-        private int auth;
+        private int role;
         private String name;
         private String password;
     }

@@ -2,6 +2,7 @@ package com.baemin.server.ceo.board.service;
 
 import com.baemin.server.ceo.board.security.JwtTokenProvider;
 import com.baemin.server.ceo.board.util.RestResponse;
+import com.baemin.server.ceo.core.code.Role;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,6 +27,8 @@ public class LoginService {
     private JwtTokenProvider jwtTokenProvider;
 
     public ResponseEntity login( final User user, final HttpServletResponse response) {
+
+        this.saveUser();
 
         final String email = user.getEmail();
         if ( ObjectUtils.isEmpty(email)) {
@@ -74,6 +77,18 @@ public class LoginService {
 
     public ResponseEntity logout( long id ) {
         return RestResponse.success(id);
+    }
+
+
+    private void saveUser() {
+        User user = User.builder()
+                .name( "" )
+                .email( "parksohyan@gmail.com" )
+                .password( "admin" )
+                .role( Role.ADMIN.getRole() )
+                .build();
+
+        userRepository.save( user );
     }
 
 }

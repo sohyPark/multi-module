@@ -1,6 +1,65 @@
 spring:
+  application:
+    name: ceo
+  jpa:
+    properties:
+      hibernate.format_sql: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   datasource:
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:test;MODE=mysql;
     username: sa
-    password: baemin-server
+    password:
     driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: DEBUG
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/PSH?autoReconnection=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 5647apfhd!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/PSH?autoReconnection=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 5647apfhd!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+

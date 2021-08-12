@@ -20,7 +20,7 @@ public class UserController {
     @RequestMapping( method = RequestMethod.POST )
     public ResponseEntity signIn( @RequestBody final UserDto.addReq req ) {
 
-        logger.info( "method: POST, api: /admin/users, auth: {}, name: {}, email: {}", req.getAuth(), req.getName(), req.getEmail() );
+        logger.info( "method: POST, api: /admin/users, role: {}, name: {}, email: {}", req.getRole(), req.getName(), req.getEmail() );
 
         return userService.signIn( req );
     }
@@ -28,7 +28,7 @@ public class UserController {
     @RequestMapping( method = RequestMethod.PUT, value = "/{id}" )
     public ResponseEntity update( @PathVariable( "id" ) long id, @RequestBody final UserDto.updateReq req ) {
 
-        logger.info( "method: PUT, api: /admin/users/{id}, id: {}, auth: {}, name: {}", id, req.getAuth(), req.getName() );
+        logger.info( "method: PUT, api: /admin/users/{id}, id: {}, role: {}, name: {}", id, req.getRole(), req.getName() );
 
         return userService.update( id, req );
     }
@@ -39,5 +39,14 @@ public class UserController {
         logger.info( "method: DELETE, api: /admin/users/{id}, id: {}", id );
 
         return userService.hide( id );
+    }
+
+
+    @RequestMapping( method = RequestMethod.GET )
+    public ResponseEntity get() {
+
+        logger.info( "method: GET, api: /admin/users" );
+
+        return userService.get();
     }
 }

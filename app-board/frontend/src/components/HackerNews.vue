@@ -1,26 +1,22 @@
 <template>
   <div style="margin-top: 50px; min-height: 500px">
     <h3 style="text-align: center; color: #2bc1bc">Hacker Latest News</h3>
-    <SortedTable :values="newsList" style="margin-top: 50px">
-      <thead style="font-size: smaller">
+    <SortedTable :values="newsList" style="margin-top: 50px; margin-right: 100px; margin-left: 100px">
+      <thead style="font-size: medium">
       <tr>
         <th scope="col" style="text-align: center">
-          <SortLink name="type">no</SortLink>
-        </th>
-        <th scope="col" style="text-align: center">
-          <SortLink name="title">type</SortLink>
+          <SortLink name="type">by</SortLink>
         </th>
         <th scope="col" style="text-align: center">
           <SortLink name="title">title</SortLink>
         </th>
       </tr>
       </thead>
-      <tbody slot="body" slot-scope="sort" style="font-size: smaller; text-align: center">
+      <tbody slot="body" slot-scope="sort" style="font-size: medium; text-align: left">
       <tr v-for="item in newsList" :key="item.id">
         <td hidden>{{item.id}}</td>
-        <td hidden>{{item.url}}</td>
-        <td>{{ item.type }}</td>
-        <td>{{ item.title }}</td>
+        <td>{{ item.by }}</td>
+        <a :href="item.url">{{ item.title }}</a>
       </tr>
       </tbody>
     </SortedTable>

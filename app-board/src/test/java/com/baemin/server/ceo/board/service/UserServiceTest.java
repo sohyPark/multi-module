@@ -24,7 +24,8 @@ class UserServiceTest {
                 .password( "admin" )
                 .build();
 
-        userRepository.save( user );
+        User newUser = userRepository.save( user );
+        Assertions.assertNotNull( newUser );
     }
 
     @Test

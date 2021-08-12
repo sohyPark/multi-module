@@ -2,7 +2,7 @@ package com.baemin.server.ceo.admin.service;
 
 import com.baemin.server.ceo.admin.dto.UserDto;
 import com.baemin.server.ceo.admin.enumtype.ActiveStatus;
-import com.baemin.server.ceo.admin.enumtype.AuthCode;
+import com.baemin.server.ceo.core.code.Role;
 import com.baemin.server.ceo.core.entity.User;
 import com.baemin.server.ceo.core.repository.UserRepository;
 import org.slf4j.Logger;
@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,9 +28,9 @@ public class UserService {
 
     public ResponseEntity signIn( final UserDto.addReq req ) {
 
-        final int auth = req.getAuth();
-        if ( !AuthCode.isContains( auth ) ) {
-            logger.error( "auth is invalid" );
+        final int role = req.getRole();
+        if ( !Role.isContains( role ) ) {
+            logger.error( "role is invalid" );
             return new ResponseEntity<>( "권한을 선택해주세요.", HttpStatus.BAD_REQUEST );
         }
 
@@ -55,8 +56,8 @@ public class UserService {
         User user = User.builder()
                 .name( name )
                 .email( email )
-                .password( encodePasswor )
-                .auth( auth )
+                .password( encodePassword )
+                .role( role )
                 .build();
 
         User saveUser = null;
@@ -68,7 +69,7 @@ public class UserService {
         }
 
         if ( saveUser.getId() < 0) {
-            logger.error( "user save is failed - auth: {}, name: {}, email: {}", auth, name, email );
+            logger.error( "user save is failed - role: {}, name: {}, email: {}", role, name, email );
             return new ResponseEntity<>( "사용자 추가가 실패하였습니다.", HttpStatus.BAD_REQUEST );
         }
 
@@ -84,13 +85,13 @@ public class UserService {
         }
 
         User user = findUser.get();
-        user.setAuth( req.getAuth() );
+        user.setRole( req.getRole() );
         user.setName( req.getName() );
         user.setPassword( req.getPassword() );
 
         User updatedUser = userRepository.save( user );
         if ( updatedUser.getId() < 1 ) {
-            logger.error( "user update is failed - id: {}, auth: {} name: {}", id, req.getAuth(), req.getName() );
+            logger.error( "user update is failed - id: {}, role: {} name: {}", id, req.getRole(), req.getName() );
             return new ResponseEntity<>( "사용자 수정이 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR );
         }
 
@@ -115,5 +116,10 @@ public class UserService {
         }
 
         return new ResponseEntity<>( HttpStatus.OK );
+    }
+
+    public ResponseEntity get() {
+        List<User> userList = userRepository.findAll();
+        return new ResponseEntity<>( userList, HttpStatus.OK );
     }
 }

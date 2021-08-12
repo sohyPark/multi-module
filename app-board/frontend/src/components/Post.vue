@@ -1,9 +1,5 @@
 <template>
   <div class="post">
-    <!--    <div style="float: right">-->
-    <!--      <span>{{user.name}}({{user.id}})님이 접속하였습니다.</span>-->
-    <!--    </div>-->
-
     <div>
       <button class="btn btn-light" style="width: 80px; margin-left: 20px; font-size: smaller" @click="getPostList">조회</button>
     </div>
@@ -34,13 +30,17 @@
           <td>{{ item.id }}</td>
           <td>{{ item.title }}</td>
           <td>{{ item.user.name }}</td>
-          <td>{{ item.createdDate }}</td>
+          <td>{{ item.createdDatetime }}</td>
 <!--          <td>-->
 <!--            <button class="btn btn-dark" style="font-size: x-small" @click="openDetailDialog(item)">수정</button>-->
 <!--          </td>-->
 <!--          <td>-->
 <!--            <button class="btn btn-dark" style="font-size: x-small" @click="openDetailDialog(item)">숨기기</button>-->
 <!--          </td>-->
+          <td>
+            <button class="btn btn-dark" style="font-size: x-small" @click="clickPostDetail(item.id)">상세</button>
+            <router-link :to="{name: 'Query', query: {name: 'post', id: item.id}}">상세</router-link>
+          </td>
         </tr>
         </tbody>
       </SortedTable>
@@ -50,79 +50,54 @@
                   style="position: absolute; left: 45%">
     </v-pagination>
 
-<!--    게시물 등록-->
-      <div v-if="addLayer.show" class="modal-mask">
-        <div class="modal-wrapper">
-          <div class="modal-container">
-            <div class="modal-body">
-              <div>
-                <input class="form-control" v-model="addLayer.title"
-                       placeholder="제목을 입력해주세요."
-                       style="margin-top: 20px; font-size: smaller">
-                <textarea class="text-area" v-model="addLayer.contents"
-                          placeholder="내용을 입력해주세요."
-                          style="width: 100%; margin-top: 20px; height: 200px; font-size: smaller"></textarea>
-              </div>
+    <!--    게시물 등록-->
+    <div v-if="addLayer.show" class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+          <div class="modal-body">
+            <div>
+              <input class="form-control" v-model="addLayer.title"
+                     placeholder="제목을 입력해주세요."
+                     style="margin-top: 20px; font-size: smaller">
+              <textarea class="text-area" v-model="addLayer.contents"
+                        placeholder="내용을 입력해주세요."
+                        style="width: 100%; margin-top: 20px; height: 200px; font-size: smaller"></textarea>
             </div>
+          </div>
 
-            <div class="modal-footer" style="display: block">
-              <div style="margin-top: 20px">
-                <button class="btn btn-primary" style="width: 49%; float: left; font-size: smaller" @click="addPost">등록</button>
-                <button class="btn btn-dark" style="width: 49%; float: right; font-size: smaller" @click="clickPostCancel">닫기</button>
-              </div>
+          <div class="modal-footer" style="display: block">
+            <div style="margin-top: 20px">
+              <button class="btn btn-primary" style="width: 49%; float: left; font-size: smaller" @click="addPost">등록
+              </button>
+              <button class="btn btn-dark" style="width: 49%; float: right; font-size: smaller"
+                      @click="clickPostCancel">닫기
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
     <!--게시물 상세-->
-    <!--    <div v-if="detailLayer.show" class="modal-mask">-->
-    <!--      <div class="modal-wrapper">-->
-    <!--        <div class="modal-container">-->
-    <!--          <div class="modal-body">-->
-    <!--            <div style="width: 70%; float: left">-->
-    <!--              <span>[{{detailLayer.doc.type}}]{{detailLayer.doc.title}}</span>-->
-    <!--              <textarea class="text-area" v-model="detailLayer.doc.contents" readonly-->
-    <!--                        style="width: 100%; margin-top: 20px; height: 200px; font-size: smaller"></textarea>-->
-    <!--            </div>-->
-    <!--            <div style="width: 30%; float: right; overflow:auto">-->
-    <!--              <SortedTable :values="detailLayer.approvalList" style="margin-top: 50px">-->
-    <!--                <tbody slot="body" slot-scope="sort" style="font-size: smaller">-->
-    <!--                <tr v-for="item in detailLayer.approvalList" :key="item.userSeq">-->
-    <!--                  <td style="vertical-align: middle;">{{item.user.name}}({{item.user.id}})</td>-->
-    <!--                  <td v-if="item.isMine && item.status === 0">-->
-    <!--                    <button class="btn btn-dark" style="font-size: x-small" @click="updateDoc(1, detailLayer.doc.docSeq)">승인</button>-->
-    <!--                  </td>-->
-    <!--                  <td v-if="item.isMine && item.status === 0">-->
-    <!--                    <button class="btn btn-dark" style="font-size: x-small" @click="updateDoc(2, detailLayer.doc.docSeq)">거절</button>-->
-    <!--                  </td>-->
-    <!--                  <td v-if="item.status === 1">-->
-    <!--                    <span style="width: 50px; font-size: smaller" class="btn btn-success">승인</span>-->
-    <!--                  </td>-->
-    <!--                  <td v-if="item.status === 2">-->
-    <!--                    <span style="width: 50px; font-size: smaller" class="btn btn-danger">거절</span>-->
-    <!--                  </td>-->
-    <!--                  <br>-->
-    <!--                  <td v-if="item.isMine && item.status === 0">-->
-    <!--                    <input class="form-control" placeholder="코멘트 입력 가능" v-model="detailLayer.comments">-->
-    <!--                  </td>-->
-    <!--                  <td v-else-if="item.status > 0">-->
-    <!--                    <span>{{item.comments}}</span>-->
-    <!--                  </td>-->
-    <!--                </tr>-->
-    <!--                </tbody>-->
-    <!--              </SortedTable>-->
-    <!--            </div>-->
-    <!--          </div>-->
+<!--      <div v-if="detailLayer.show" class="modal-mask">-->
+<!--        <div class="modal-wrapper">-->
+<!--          <div class="modal-container">-->
+<!--            <div class="modal-body">-->
+<!--              <div style="width: 70%; float: left">-->
+<!--                <span>[{{detailLayer.doc.type}}]{{detailLayer.doc.title}}</span>-->
+<!--                <textarea class="text-area" v-model="detailLayer.doc.contents" readonly-->
+<!--                          style="width: 100%; margin-top: 20px; height: 200px; font-size: smaller"></textarea>-->
+<!--              </div>-->
+<!--            </div>-->
 
-    <!--          <div class="modal-footer" style="display: block">-->
-    <!--            <div style="margin-top: 20px">-->
-    <!--              <button class="btn btn-dark" style="width: 100%; font-size: smaller" @click="closeDetailDialog">닫기</button>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
+<!--            <div class="modal-footer" style="display: block">-->
+<!--              <div style="margin-top: 20px">-->
+<!--                <button class="btn btn-dark" style="width: 100%; font-size: smaller" @click="closeDetailDialog">닫기</button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
   </div>
 
 
@@ -149,6 +124,10 @@ export default {
         title: "",
         contents: ""
       },
+      detailLayer: {
+        show: false,
+        post: {}
+      },
       postList: []
     }
   },
@@ -161,20 +140,18 @@ export default {
           page: this.filter.page,
           size: this.filter.size
         }
-      })
-        .then((response) => {
-          this.tokenValidationChk(response.data)
-          if (response.status == 200) {
-            const total = response.data.total;
-            const size = this.filter.size;
+      }).then((response) => {
+        //this.tokenValidationChk(response.data)
+        if (response.status === 200) {
+          const total = response.data.total;
+          const size = this.filter.size;
 
-            this.total = Math.ceil(total / size);
-            this.postList = response.data.list;
-          }
-        })
-        .catch((ex) => {
-          console.log(ex);
-        })
+          this.total = Math.ceil(total / size);
+          this.postList = response.data.list;
+        }
+      }).catch((ex) => {
+        console.log(ex);
+      })
     },
     clickAddPost: function () {
       this.addLayer.show = true;
@@ -183,6 +160,10 @@ export default {
       this.addLayer.show = false;
       this.addLayer.contents = "";
       this.addLayer.title = "";
+    },
+    clickPostDetail: function (id) {
+      this.getPost(id);
+      this.detailLayer.show = true;
     },
     addPost: function () {
       const params = {
@@ -200,19 +181,20 @@ export default {
           } else {
             alert(response.data);
           }
-        })
-        .catch((ex) => {
-          console.log(ex);
-        })
+        }).catch((ex) => {
+        console.log(ex);
+      })
     },
-    tokenValidationChk: function (data) {
-      if (data.hasOwnProperty('isToken')) {
-        const isToken = data.isToken;
-        if ('false' === isToken) {
-          this.$cookie.delete('toke');
-          this.$router.replace('/login');
-        }
-      }
+    getPost: function (id) {
+      this.$axios.post('/board/posts/' + id, this.header)
+        .then((response) => {
+          const status = response.status;
+          if (status === 200) {
+            this.detailLayer.post = response.data;
+          }
+        }).catch((ex) => {
+        console.log(ex);
+      })
     }
   },
   created() {
@@ -225,41 +207,42 @@ export default {
 .post {
   padding: 50px;
 }
-/*.modal-mask {*/
-/*  position: fixed;*/
-/*  z-index: 9998;*/
-/*  top: 0;*/
-/*  left: 0;*/
-/*  width: 100%;*/
-/*  height: 100%;*/
-/*  background-color: rgba(0, 0, 0, .5);*/
-/*  display: table;*/
-/*  transition: opacity .3s ease;*/
-/*}*/
 
-/*.modal-wrapper {*/
-/*  display: table-cell;*/
-/*  vertical-align: middle;*/
-/*}*/
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
 
-/*.modal-container {*/
-/*  width: 80%;*/
-/*  height: 70%;*/
-/*  margin: 0px auto;*/
-/*  padding: 20px 30px;*/
-/*  background-color: #fff;*/
-/*  border-radius: 2px;*/
-/*  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);*/
-/*  transition: all .3s ease;*/
-/*  font-family: Helvetica, Arial, sans-serif;*/
-/*}*/
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
 
-/*.modal-header h3 {*/
-/*  margin-top: 0;*/
-/*  color: #42b983;*/
-/*}*/
+.modal-container {
+  width: 80%;
+  height: 70%;
+  margin: 0px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
 
-/*.modal-body {*/
-/*  margin: 20px 0;*/
-/*}*/
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
 </style>

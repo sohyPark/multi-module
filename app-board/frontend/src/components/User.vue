@@ -1,5 +1,11 @@
 <template>
   <div style="margin-top: 50px; min-height: 500px; margin-left: 50px; margin-right: 50px">
+    <div>
+      <button class="btn btn-primary"
+                style="width: 100px; font-size: smaller; float: right"
+                v-b-modal.modal-add-user>사용자 추가
+      </button>
+    </div>
     <SortedTable :values="userList" style="margin-top: 50px">
       <thead style="font-size: medium">
       <tr>
@@ -23,7 +29,7 @@
       <tr v-for="(item, index) in userList" :key="item.id">
         <!--권한-->
         <div v-if="item.editable">
-          <b-form-group  style="margin-left: 20px">
+          <b-form-group style="margin-left: 20px">
             <b-form-radio v-model="addLayer.auth" name="some-radios" value="1"> 관리자</b-form-radio>
             <b-form-radio v-model="addLayer.auth" name="some-radios" value="2"> 사용자</b-form-radio>
           </b-form-group>
@@ -43,31 +49,92 @@
       </tr>
       </tbody>
     </SortedTable>
-    <div style="float: left; display: flex">
-      <b-form-group style="margin-left: 20px">
-        <b-form-radio v-model="addLayer.auth" name="some-radios" value="1"> 관리자</b-form-radio>
-        <b-form-radio v-model="addLayer.auth" name="some-radios" value="2"> 사용자</b-form-radio>
-      </b-form-group>
-      <b-input v-model="addLayer.name" style="width: 250px; margin-left: 20px" placeholder="이름"></b-input>
-      <b-input v-model="addLayer.email" style="width: 350px; margin-left: 20px"
-               placeholder="baemin@wooahan.com"></b-input>
-      <b-input v-model="addLayer.password" style="width: 350px; margin-left: 20px" type="password"
-               placeholder="비밀번호"></b-input>
-      <button class="btn btn-primary" style="width: 100px; font-size: smaller; float: right; margin-left: 20px"
-              @click="addUser">사용자 추가
-      </button>
-    </div>
-  </div>
 
-  <!--  사용자 추가 -->
-  <!--  <div v-if="addLayer.show" class="modal-mask">-->
-  <!--    <div class="modal-wrapper">-->
-  <!--      <div class="modal-container">-->
-  <!--        <div class="modal-body">-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
+    <b-modal
+      id="modal-add-user"
+      ref="modal"
+      title="사용자 추가"
+      @show="initialize"
+      @hidden="initialize"
+      @ok="userOk"
+    >
+      <form ref="form" @submit.stop.prevent="userSubmit">
+        <b-form-group
+          label="권한"
+          label-for="role-radios">
+          <div style="display: flex; margin-bottom: 20px">
+            <b-form-radio
+              v-model="role"
+              name="role-radios"
+              style="margin-right: 20px"
+              value="1">
+              관리자
+            </b-form-radio>
+            <b-form-radio
+              v-model="role"
+              name="role-radios"
+              value="2">
+              사용자
+            </b-form-radio>
+          </div>
+
+        </b-form-group>
+
+        <b-form-group
+          label="이름"
+          label-for="name-input"
+          invalid-feedback="이름을 입력해주세요."
+          :state="nameState"
+          style="margin-bottom: 20px"
+        >
+          <b-form-input
+            ref="ref-name"
+            id="name-input"
+            v-model="name"
+            placeholder="홍길동"
+            :state="nameState"
+            required
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="이메일"
+          label-for="email-input"
+          invalid-feedback="이메일을 입력해주세요."
+          :state="emailState"
+          style="margin-bottom: 20px"
+        >
+          <b-form-input
+            ref="ref-email"
+            id="email-input"
+            v-model="email"
+            placeholder="baemin@wooahan.com"
+            :state="emailState"
+            required
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="비밀번호"
+          label-for="password-input"
+          invalid-feedback="비밀번호를 입력해주세요."
+          :state="passwordState"
+          style="margin-bottom: 20px"
+        >
+          <b-form-input
+            ref="ref-password"
+            id="email-input"
+            v-model="password"
+            type="password"
+            placeholder="비밀번호"
+            :state="passwordState"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
+
+  </div>
 </template>
 
 <script>
@@ -75,14 +142,27 @@ export default {
   name: "User",
   data: function () {
     return {
+      role: 1,
+      name: '',
+      nameState: null,
+      email: '',
+      emailState: null,
+      passwordState: null,
+      password: "",
+
       header: {headers: {"Content-type": "application/json"}},
       userList: [],
       addLayer: {
+        show: false,
+        nameState: null,
         name: "",
+        emailState: null,
         email: "",
+        passwordState: null,
         password: "",
         auth: 1
-      }
+      },
+      modalShow: false
     }
   },
   filters: {
@@ -106,9 +186,17 @@ export default {
     }
   },
   methods: {
+    checkFormValidity() {
+
+      this.nameState = this.$refs['ref-name'].value !== ''
+      this.emailState = this.$refs['ref-email'].value !== ''
+      this.passwordState = this.$refs['ref-password'].value !== ''
+
+      return !(!this.nameState || !this.emailState || !this.passwordState);
+    },
     getUserList: function () {
       const token = this.$cookie.get('token');
-      this.$axios.get('/board/users', {
+      this.$axios.get('/admin/users', {
         headers: {'jwt-auth-token': token}
       })
         .then((response) => {
@@ -125,32 +213,37 @@ export default {
         })
     },
     initialize: function () {
-      this.addLayer = {
-        name: "",
-        email: "",
-        password: "",
-        auth: 1
+      this.role = 1;
+      this.name =  '';
+      this.email = '';
+      this.password = '';
+    },
+
+    userOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      this.userSubmit()
+    },
+    userSubmit() {
+      debugger
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
       }
+      // Push the name to submitted names
+      this.addUser();
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-prevent-closing')
+      })
     },
     addUser: function () {
-      if (!this.addLayer.name) {
-        alert("이름을 입력해주세요.");
-        return;
-      }
-      if (!this.addLayer.email) {
-        alert("이메일을 입력해주세요.");
-        return;
-      }
-      if (!this.addLayer.password) {
-        alert("비밀번호를 입력해주세요.");
-        return;
-      }
 
       const params = {
-        name: this.addLayer.name,
-        email: this.addLayer.email,
-        password: this.addLayer.password,
-        auth: this.addLayer.auth
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        auth: this.role
       };
 
       this.$axios.post('/admin/users', params, this.header)
@@ -159,6 +252,7 @@ export default {
           console.log(response)
           if (status === 200) {
             alert("사용자가 추가 되었습니다.");
+
             this.getUserList();
           } else {
             alert(response.data);
@@ -171,7 +265,7 @@ export default {
     updateUser: function (item) {
       this.$axios.put('/board/users/' + item.id, item, this.header)
         .then((response) => {
-          this.tokenValidationChk(response.data);
+          //this.tokenValidationChk(response.data);
           const status = response.status;
           if (status === 200) {
             let alertMessage;
@@ -193,6 +287,7 @@ export default {
           console.log(ex);
         })
     },
+
     clickEdit: function (idx) {
       this.userList.forEach((value, index) => {
         if (idx === index) {

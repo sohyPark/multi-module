@@ -107,4 +107,9 @@ public class BoardService {
         List<Board> boardList = boardRepository.findAll();
         return new ResponseEntity<>( boardList, HttpStatus.OK );
     }
+
+    public ResponseEntity getActiveBoards() {
+        List<Board> boardList = boardRepository.findBoardsByActive(ActiveStatus.ACTIVE.ordinal() );
+        return new ResponseEntity<>( boardList, HttpStatus.OK );
+    }
 }

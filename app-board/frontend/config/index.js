@@ -15,12 +15,12 @@ module.exports = {
       '/board': {
         target: 'http://localhost:8081',
         changeOrigin: true,
-        secure: false
+        logLevel: 'debug'
       },
       '/admin': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false
+        logLevel: 'debug'
       }
     },
 
@@ -54,12 +54,10 @@ module.exports = {
     proxy: {
       '/board': {
         target: 'http://localhost:8081',
-        ws: true,
         changeOrigin: true
       },
       '/admin': {
         target: 'http://localhost:8080',
-        ws: true,
         changeOrigin: true
       }
     },

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import HelloWorld from '../components/Login'
 import Login from '../components/Login'
 import Post from "../components/Post";
 import HackerNews from "../components/HackerNews";
@@ -10,6 +10,7 @@ import Board from "../components/Board";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import PostDetail from "../components/PostDetail";
 
 
 Vue.use(Router)
@@ -19,8 +20,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: HelloWorld,
+      component: HelloWorld,
     },
     {
       path: '/login',
@@ -32,6 +33,12 @@ export default new Router({
       path: '/post',
       name: Post,
       component: Post,
+      children: [
+        {
+          path: ':id',
+          component: PostDetail
+        }
+      ],
       props: true
     },
     {
